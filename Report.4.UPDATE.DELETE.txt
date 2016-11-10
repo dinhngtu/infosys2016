@@ -1,0 +1,201 @@
+--------------
+begin
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+select 'First, we create the new department in the Departments table.' as 'Step 1'
+--------------
+
++---------------------------------------------------------------+
+| Step 1                                                        |
++---------------------------------------------------------------+
+| First, we create the new department in the Departments table. |
++---------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+insert into departments(dept_no, dept_name) values ('d010', 'Research and Development')
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+select 'Then, we create new dept_emp entries pointing to the new department.' as 'Step 2'
+--------------
+
++----------------------------------------------------------------------+
+| Step 2                                                               |
++----------------------------------------------------------------------+
+| Then, we create new dept_emp entries pointing to the new department. |
++----------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+replace dept_emp(dept_no, emp_no, from_date, to_date)
+        select 'd010', emp_no, from_date, to_date
+        from dept_emp
+        where dept_no = 'd005' or dept_no = 'd008'
+--------------
+
+Query OK, 112067 rows affected (6.35 sec)
+Records: 106833  Duplicates: 5234  Warnings: 0
+
+--------------
+replace dept_manager(dept_no, emp_no, from_date, to_date)
+        select 'd010', emp_no, from_date, to_date
+        from dept_manager
+        where dept_no = 'd005' or dept_no = 'd008'
+--------------
+
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+--------------
+select 'We remove references to the old departments.' as 'Step 3'
+--------------
+
++----------------------------------------------+
+| Step 3                                       |
++----------------------------------------------+
+| We remove references to the old departments. |
++----------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+delete from dept_emp
+        where dept_no = 'd005' or dept_no = 'd008'
+--------------
+
+Query OK, 106833 rows affected (7.23 sec)
+
+--------------
+delete from dept_manager
+        where dept_no = 'd005' or dept_no = 'd008'
+--------------
+
+Query OK, 4 rows affected (0.00 sec)
+
+--------------
+select * from dept_manager
+--------------
+
++--------+---------+------------+------------+
+| emp_no | dept_no | from_date  | to_date    |
++--------+---------+------------+------------+
+| 110022 | d001    | 1985-01-01 | 1991-10-01 |
+| 110039 | d001    | 1991-10-01 | 9999-01-01 |
+| 110085 | d002    | 1985-01-01 | 1989-12-17 |
+| 110114 | d002    | 1989-12-17 | 9999-01-01 |
+| 110183 | d003    | 1985-01-01 | 1992-03-21 |
+| 110228 | d003    | 1992-03-21 | 9999-01-01 |
+| 110303 | d004    | 1985-01-01 | 1988-09-09 |
+| 110344 | d004    | 1988-09-09 | 1992-08-02 |
+| 110386 | d004    | 1992-08-02 | 1996-08-30 |
+| 110420 | d004    | 1996-08-30 | 9999-01-01 |
+| 110511 | d010    | 1985-01-01 | 1992-04-25 |
+| 110567 | d010    | 1992-04-25 | 9999-01-01 |
+| 110725 | d006    | 1985-01-01 | 1989-05-06 |
+| 110765 | d006    | 1989-05-06 | 1991-09-12 |
+| 110800 | d006    | 1991-09-12 | 1994-06-28 |
+| 110854 | d006    | 1994-06-28 | 9999-01-01 |
+| 111035 | d007    | 1985-01-01 | 1991-03-07 |
+| 111133 | d007    | 1991-03-07 | 9999-01-01 |
+| 111400 | d010    | 1985-01-01 | 1991-04-08 |
+| 111534 | d010    | 1991-04-08 | 9999-01-01 |
+| 111692 | d009    | 1985-01-01 | 1988-10-17 |
+| 111784 | d009    | 1988-10-17 | 1992-09-08 |
+| 111877 | d009    | 1992-09-08 | 1996-01-03 |
+| 111939 | d009    | 1996-01-03 | 9999-01-01 |
++--------+---------+------------+------------+
+24 rows in set (0.00 sec)
+
+--------------
+select 'Finally, we delete the old departments. We can\'t do it before updating the other tables because their references are set to DELETE CASCADE.' as 'Step 4'
+--------------
+
++---------------------------------------------------------------------------------------------------------------------------------------------+
+| Step 4                                                                                                                                      |
++---------------------------------------------------------------------------------------------------------------------------------------------+
+| Finally, we delete the old departments. We can't do it before updating the other tables because their references are set to DELETE CASCADE. |
++---------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+delete from departments where dept_no = 'd005' or dept_no = 'd008'
+--------------
+
+Query OK, 2 rows affected (0.29 sec)
+
+--------------
+select * from departments
+--------------
+
++---------+--------------------------+
+| dept_no | dept_name                |
++---------+--------------------------+
+| d009    | Customer Service         |
+| d002    | Finance                  |
+| d003    | Human Resources          |
+| d001    | Marketing                |
+| d004    | Production               |
+| d006    | Quality Management       |
+| d010    | Research and Development |
+| d007    | Sales                    |
++---------+--------------------------+
+8 rows in set (0.00 sec)
+
+--------------
+insert into departments(dept_no, dept_name) values ('d011', 'Marketing and Sales')
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+replace dept_emp(dept_no, emp_no, from_date, to_date)
+        select 'd011', emp_no, from_date, to_date
+        from dept_emp
+        where dept_no = 'd001' or dept_no = 'd007'
+--------------
+
+Query OK, 76108 rows affected (4.88 sec)
+Records: 72456  Duplicates: 3652  Warnings: 0
+
+--------------
+replace dept_manager(dept_no, emp_no, from_date, to_date)
+        select 'd011', emp_no, from_date, to_date
+        from dept_manager
+        where dept_no = 'd001' or dept_no = 'd007'
+--------------
+
+Query OK, 4 rows affected (0.00 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+--------------
+delete from dept_emp
+        where dept_no = 'd001' or dept_no = 'd007'
+--------------
+
+Query OK, 72456 rows affected (6.25 sec)
+
+--------------
+delete from dept_manager
+        where dept_no = 'd001' or dept_no = 'd007'
+--------------
+
+Query OK, 4 rows affected (0.00 sec)
+
+--------------
+delete from departments where dept_no = 'd001' or dept_no = 'd007'
+--------------
+
+Query OK, 2 rows affected (0.18 sec)
+
+--------------
+rollback
+--------------
+
+Query OK, 0 rows affected (25.71 sec)
+
+Bye
