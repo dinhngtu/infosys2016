@@ -1,0 +1,903 @@
+--------------
+select 'All info of all employees' as 'Q1'
+--------------
+
++---------------------------+
+| Q1                        |
++---------------------------+
+| All info of all employees |
++---------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select * from employees limit 10
+--------------
+
++--------+------------+------------+-----------+--------+------------+
+| emp_no | birth_date | first_name | last_name | gender | hire_date  |
++--------+------------+------------+-----------+--------+------------+
+|  10001 | 1953-09-02 | Georgi     | Facello   | M      | 1986-06-26 |
+|  10002 | 1964-06-02 | Bezalel    | Simmel    | F      | 1985-11-21 |
+|  10003 | 1959-12-03 | Parto      | Bamford   | M      | 1986-08-28 |
+|  10004 | 1954-05-01 | Chirstian  | Koblick   | M      | 1986-12-01 |
+|  10005 | 1955-01-21 | Kyoichi    | Maliniak  | M      | 1989-09-12 |
+|  10006 | 1953-04-20 | Anneke     | Preusig   | F      | 1989-06-02 |
+|  10007 | 1957-05-23 | Tzvetan    | Zielinski | F      | 1989-02-10 |
+|  10008 | 1958-02-19 | Saniya     | Kalloufi  | M      | 1994-09-15 |
+|  10009 | 1952-04-19 | Sumant     | Peac      | F      | 1985-02-18 |
+|  10010 | 1963-06-01 | Duangkaew  | Piveteau  | F      | 1989-08-24 |
++--------+------------+------------+-----------+--------+------------+
+10 rows in set (0.00 sec)
+
+--------------
+select 'All info of all departments' as 'Q2'
+--------------
+
++-----------------------------+
+| Q2                          |
++-----------------------------+
+| All info of all departments |
++-----------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select * from departments
+--------------
+
++---------+--------------------+
+| dept_no | dept_name          |
++---------+--------------------+
+| d009    | Customer Service   |
+| d005    | Development        |
+| d002    | Finance            |
+| d003    | Human Resources    |
+| d001    | Marketing          |
+| d004    | Production         |
+| d006    | Quality Management |
+| d008    | Research           |
+| d007    | Sales              |
++---------+--------------------+
+9 rows in set (0.00 sec)
+
+--------------
+select 'Full names of all employees' as 'Q3'
+--------------
+
++-----------------------------+
+| Q3                          |
++-----------------------------+
+| Full names of all employees |
++-----------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select concat(first_name, ' ', last_name) as full_name from employees limit 10
+--------------
+
++--------------------+
+| full_name          |
++--------------------+
+| Georgi Facello     |
+| Bezalel Simmel     |
+| Parto Bamford      |
+| Chirstian Koblick  |
+| Kyoichi Maliniak   |
+| Anneke Preusig     |
+| Tzvetan Zielinski  |
+| Saniya Kalloufi    |
+| Sumant Peac        |
+| Duangkaew Piveteau |
++--------------------+
+10 rows in set (0.00 sec)
+
+--------------
+select 'Names of all departments' as 'Q4'
+--------------
+
++--------------------------+
+| Q4                       |
++--------------------------+
+| Names of all departments |
++--------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select dept_name from departments
+--------------
+
++--------------------+
+| dept_name          |
++--------------------+
+| Customer Service   |
+| Development        |
+| Finance            |
+| Human Resources    |
+| Marketing          |
+| Production         |
+| Quality Management |
+| Research           |
+| Sales              |
++--------------------+
+9 rows in set (0.00 sec)
+
+--------------
+select 'Full names of employees working in "Sales" department' as 'Q5'
+--------------
+
++-------------------------------------------------------+
+| Q5                                                    |
++-------------------------------------------------------+
+| Full names of employees working in "Sales" department |
++-------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select concat(first_name, ' ', last_name) as full_name
+    from employees
+    join dept_emp on employees.emp_no = dept_emp.emp_no
+    join departments on departments.dept_no = dept_emp.dept_no
+    where dept_name = 'Sales'
+    limit 10
+--------------
+
++----------------------+
+| full_name            |
++----------------------+
+| Bezalel Simmel       |
+| Kazuhito Cappelletti |
+| Bader Swan           |
+| Uri Lenart           |
+| Yinghua Dredge       |
+| Sanjiv Zschoche      |
+| Breannda Billingsley |
+| Tse Herber           |
+| Charlene Brattka     |
+| Xinglin Eugenio      |
++----------------------+
+10 rows in set (0.00 sec)
+
+--------------
+select 'Full names of male employees working in "Finance" department' as 'Q6'
+--------------
+
++--------------------------------------------------------------+
+| Q6                                                           |
++--------------------------------------------------------------+
+| Full names of male employees working in "Finance" department |
++--------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select concat(first_name, ' ', last_name) as full_name
+    from employees
+    join dept_emp on employees.emp_no = dept_emp.emp_no
+    join departments on departments.dept_no = dept_emp.dept_no
+    where dept_name = 'Finance' and gender = 'M'
+    limit 10
+--------------
+
++----------------------+
+| full_name            |
++----------------------+
+| Yinghua Dredge       |
+| Premal Baek          |
+| Ayakannu Skrikant    |
+| Marla Brendel        |
+| Chenyi Syang         |
+| Kazuhito Encarnacion |
+| Miyeon Macedo        |
+| Shrikanth Mahmud     |
+| Pragnesh Iisaka      |
+| Shaw Wendorf         |
++----------------------+
+10 rows in set (0.00 sec)
+
+--------------
+select 'Salaries of female employees working in "Marketing" department' as 'Q7'
+--------------
+
++----------------------------------------------------------------+
+| Q7                                                             |
++----------------------------------------------------------------+
+| Salaries of female employees working in "Marketing" department |
++----------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select salary
+    from employees
+    join dept_emp on employees.emp_no = dept_emp.emp_no
+    join departments on departments.dept_no = dept_emp.dept_no
+    join salaries on employees.emp_no = salaries.emp_no
+    where dept_name = 'Marketing' and gender = 'F'
+    limit 10
+--------------
+
++--------+
+| salary |
++--------+
+|  71380 |
+|  75538 |
+|  79510 |
+|  82163 |
+|  86157 |
+|  89619 |
+|  91985 |
+|  96122 |
+|  98522 |
+|  99651 |
++--------+
+10 rows in set (0.00 sec)
+
+--------------
+select 'Full names of employees who have the same last name as their manager' as 'Q8'
+--------------
+
++----------------------------------------------------------------------+
+| Q8                                                                   |
++----------------------------------------------------------------------+
+| Full names of employees who have the same last name as their manager |
++----------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select concat(emp_temp.first_name, ' ', emp_temp.last_name) as full_name
+    from (
+        select first_name, last_name, employees.emp_no, dept_no
+        from employees
+        join dept_manager on employees.emp_no = dept_manager.emp_no) as managers_temp
+    join (
+        select first_name, last_name, employees.emp_no, dept_no
+        from employees
+        join dept_emp on employees.emp_no = dept_emp.emp_no) as emp_temp
+    on managers_temp.emp_no != emp_temp.emp_no
+    and managers_temp.dept_no = emp_temp.dept_no
+    and managers_temp.last_name = emp_temp.last_name
+--------------
+
++------------------------+
+| full_name              |
++------------------------+
+| Shirish Wegerle        |
+| Shigeaki Hagimont      |
+| Nidapan Hagimont       |
+| Chenxi Zhang           |
+| Kerhong Hagimont       |
+| Suebskul Ghazalie      |
+| Stabislas Weedman      |
+| Kellyn Cools           |
+| Zijian Kambil          |
+| Guther Legleitner      |
+| Aram DasSarma          |
+| Gunilla Kieras         |
+| Garnik Hagimont        |
+| Mingdong Hagimont      |
+| Shir Hagimont          |
+| Masali Butterworth     |
+| Parke Hagimont         |
+| Harngdar Cools         |
+| Maren Hofmeyr          |
+| Khosrow Zhang          |
+| Marc Giarratana        |
+| Vivian Cools           |
+| Masali Ghazalie        |
+| Fatemeh Zhang          |
+| Gila DasSarma          |
+| Anwar Spinelli         |
+| Vatsa Wegerle          |
+| Ugo Hagimont           |
+| Stella DasSarma        |
+| Wilmer Minakawa        |
+| Elzbieta DasSarma      |
+| Shen Ghazalie          |
+| Mariangiola Ghazalie   |
+| Alassane Kieras        |
+| Marco Giarratana       |
+| Selwyn Ghazalie        |
+| Berni Wegerle          |
+| Kazuhiko Ossenbruggen  |
+| Guenter Wegerle        |
+| Nidapan DasSarma       |
+| Zejun Ghazalie         |
+| Becky Kambil           |
+| JoAnne Wegerle         |
+| Niranjan Kambil        |
+| Kazuhiro Kaelbling     |
+| Niteen Legleitner      |
+| Heejo Kieras           |
+| Holgard Kieras         |
+| Basim Ghazalie         |
+| Khun Ghazalie          |
+| Shimshon Weedman       |
+| Jaideep Hofmeyr        |
+| Mong DasSarma          |
+| Richard DasSarma       |
+| Jaana Staelin          |
+| Krisda Cools           |
+| Kauko Wegerle          |
+| Yagil Weedman          |
+| Hironoby Hofmeyr       |
+| Valter Weedman         |
+| Yongdong Hagimont      |
+| Nirmal Wegerle         |
+| Sandeepan DasSarma     |
+| Oguz Kieras            |
+| LiMin Kambil           |
+| Youssef Staelin        |
+| Spyrose Ghazalie       |
+| Demin Staelin          |
+| Jahangir Legleitner    |
+| Maren Kieras           |
+| Atreye DasSarma        |
+| Hitofumi Kieras        |
+| Krister Alpin          |
+| Dines Spinelli         |
+| Gil Minakawa           |
+| Christ Pesch           |
+| Arnd Giarratana        |
+| Navin Cools            |
+| Eric Butterworth       |
+| Kristen DasSarma       |
+| Armond Kaelbling       |
+| Florian Cools          |
+| Gil Alpin              |
+| Sanjay Alpin           |
+| Nigel Sigstam          |
+| Yonghong Hofmeyr       |
+| Yannis Hagimont        |
+| Marlo DasSarma         |
+| Guozhong Wegerle       |
+| Masamitsu Zhang        |
+| Marko Kieras           |
+| Tooru Hagimont         |
+| Tianruo Ghazalie       |
+| Tadahiro DasSarma      |
+| Malu Kaelbling         |
+| Sashi Wegerle          |
+| Jolita Cools           |
+| Falguni Wegerle        |
+| Hatim Ghazalie         |
+| Erez Kaelbling         |
+| Kiyotoshi Cools        |
+| Gay Cools              |
+| Yahiko Wegerle         |
+| Tse Wegerle            |
+| Susuma Kieras          |
+| Bokyung Cools          |
+| Heather Kaelbling      |
+| Mansur Hagimont        |
+| Heekeun Spinelli       |
+| Yongmin Zhang          |
+| Pranas Cools           |
+| Make Kieras            |
+| Mabry Staelin          |
+| Matk Hagimont          |
+| Alejandro Kieras       |
+| Yechezkel Wegerle      |
+| Sariel Alpin           |
+| Sariel Ghazalie        |
+| Chriss Hagimont        |
+| Vasiliy Hagimont       |
+| Ulf Hagimont           |
+| Yongmin Wegerle        |
+| Niteen Wegerle         |
+| Dinkar Cools           |
+| Lijia Cools            |
+| Mahmut Sigstam         |
+| Arno Spinelli          |
+| Hidefumi Pesch         |
+| Hideo Cools            |
+| Hugh Zhang             |
+| Venkatesan Kieras      |
+| Pohua Hagimont         |
+| Goncalo Butterworth    |
+| Gila Wegerle           |
+| Troy Wegerle           |
+| Venkatesan Kieras      |
+| Arch Spinelli          |
+| Yishay DasSarma        |
+| Florina Hagimont       |
+| Kannan Hagimont        |
+| Yurii Ghazalie         |
+| Muneo Pesch            |
+| Shridhar DasSarma      |
+| Herbert Markovitch     |
+| Hiroyasu DasSarma      |
+| Bouchung Butterworth   |
+| Janalee DasSarma       |
+| Zeydy Ghazalie         |
+| Demin Kaelbling        |
+| Zhongwei Giarratana    |
+| Marek Quadeer          |
+| Zvonko Giarratana      |
+| Zhaofang Legleitner    |
+| Elrique Hofmeyr        |
+| Fumiyo DasSarma        |
+| Fusako Giarratana      |
+| Martine Kieras         |
+| Fumitake Wegerle       |
+| Apostol Weedman        |
+| Zita Markovitch        |
+| Kwangjo Ossenbruggen   |
+| Limsoon Kaelbling      |
+| Takushi Wegerle        |
+| Guozhong Kaelbling     |
+| Basil Kaelbling        |
+| Weicheng Hagimont      |
+| Yuriy Kambil           |
+| Guther Cools           |
+| Dante Butterworth      |
+| Mori Hofmeyr           |
+| Fatemeh Kieras         |
+| Marek DasSarma         |
+| Yishai Cools           |
+| Noritoshi Kaelbling    |
+| Tsz Hagimont           |
+| Cullen Ghazalie        |
+| Nectarios Alpin        |
+| Lijia Ghazalie         |
+| Werner Cools           |
+| Guoxiang Kieras        |
+| Gay Cools              |
+| Pascal Kambil          |
+| Adil Wegerle           |
+| Navid Kieras           |
+| Alejandro Quadeer      |
+| Maria DasSarma         |
+| Suvo Cools             |
+| Henk Kieras            |
+| Shih Ghazalie          |
+| Khalid Giarratana      |
+| Tran Zhang             |
+| Phillip DasSarma       |
+| Weiru Kaelbling        |
+| Jessie Kaelbling       |
+| Sumant Legleitner      |
+| Gilbert Hagimont       |
+| Ranan Hagimont         |
+| Hausi Cools            |
+| Przemyslawa Hagimont   |
+| Ugo Onuegbe            |
+| Paddy Wegerle          |
+| Basem Wegerle          |
+| Troy Hagimont          |
+| Gladys Onuegbe         |
+| Perry Legleitner       |
+| Sasan Hagimont         |
+| Zhenhua Hofmeyr        |
+| Maha Hofmeyr           |
+| Aimee Kieras           |
+| Frederique Ghazalie    |
+| Sergi Kaelbling        |
+| Vasiliy Zhang          |
+| Alain DasSarma         |
+| Venkatesan Cools       |
+| Miyeon Onuegbe         |
+| Berthier Hagimont      |
+| Hatsukazu Cools        |
+| Hugh Giarratana        |
+| Tommaso Kambil         |
+| Shaunak Wegerle        |
+| Hironoby Kaelbling     |
+| Jongsuk Kambil         |
+| Minghong Wegerle       |
+| Elgin Hofmeyr          |
+| Chrisa Cools           |
+| Kwangsub Wegerle       |
+| Ortrun Hagimont        |
+| Hidekazu Cools         |
+| Weiyi Wegerle          |
+| Tetsurou Kaelbling     |
+| Khun Markovitch        |
+| Seongbin Cools         |
+| Fox Kieras             |
+| Lijie Spinelli         |
+| Danil Onuegbe          |
+| Becky Ghazalie         |
+| Eberhardt Kieras       |
+| Ortrud Hagimont        |
+| Danco Butterworth      |
+| Navin Pesch            |
+| Basant Sigstam         |
+| Adamantios Cools       |
+| Shooichi Hagimont      |
+| Pradeep Hagimont       |
+| Randi Zhang            |
+| Wanqing Ghazalie       |
+| Pramod Wegerle         |
+| Arra Hagimont          |
+| Garnet Kieras          |
+| Adam Alpin             |
+| Lobel Alpin            |
+| Udaiprakash Ghazalie   |
+| Maya Weedman           |
+| Xinyu Cools            |
+| Olivera Zhang          |
+| Weiyi Ossenbruggen     |
+| Mamdouh Weedman        |
+| Mantis Zhang           |
+| Bernd Giarratana       |
+| Marit Kaelbling        |
+| Ekawit DasSarma        |
+| Indrajit Staelin       |
+| Jeanna Staelin         |
+| Hsiangchu Hagimont     |
+| Shalesh Ghazalie       |
+| Bezalel Butterworth    |
+| Hideyuki Hagimont      |
+| Nahla Spinelli         |
+| Erez Minakawa          |
+| Sahrah Hagimont        |
+| Vincent Onuegbe        |
+| Xinan Hagimont         |
+| Kazuhira DasSarma      |
+| Susanne Hagimont       |
+| Larisa Wegerle         |
+| Christoph Pesch        |
+| Shugo Ghazalie         |
+| Yakichi Wegerle        |
+| Billur DasSarma        |
+| Srinidhi Kieras        |
+| Toshimitsu Zhang       |
+| Clyde Kaelbling        |
+| Honglan Staelin        |
+| Goo Kieras             |
+| Takahira Ghazalie      |
+| Xuedong DasSarma       |
+| Aloys Giarratana       |
+| Alassane Sigstam       |
+| Bodh Cools             |
+| Felicidad Butterworth  |
+| Marit Minakawa         |
+| Oscal Hagimont         |
+| Heng DasSarma          |
+| Kristinn Cools         |
+| Mooi Kaelbling         |
+| Khaled Wegerle         |
+| Torsten Legleitner     |
+| Xuejun Alpin           |
+| Itzchak Sigstam        |
+| Sigeru Hagimont        |
+| Kwangsub Ghazalie      |
+| Lijie Staelin          |
+| Heping Wegerle         |
+| Zhongwei Quadeer       |
+| Divier Hagimont        |
+| Pradeep Kaelbling      |
+| Rafael Kieras          |
+| Mong Kaelbling         |
+| Rafail Hagimont        |
+| Jeanne Ossenbruggen    |
+| Masadi DasSarma        |
+| Hugo DasSarma          |
+| Arif Spinelli          |
+| Cordelia Ghazalie      |
+| Tran Hagimont          |
+| Jaroslava Kieras       |
+| Breannda Ossenbruggen  |
+| Woody Kieras           |
+| Randi Kaelbling        |
+| Claude Zhang           |
+| Suebskul Kieras        |
+| Mechthild Kambil       |
+| Khedija Wegerle        |
+| Tran Ossenbruggen      |
+| Nalini Markovitch      |
+| Fen Ossenbruggen       |
+| Ymte Kaelbling         |
+| Xiadong Onuegbe        |
+| Eirik Ghazalie         |
+| Gay Kaelbling          |
+| Aleksander Wegerle     |
+| Kyoichi Spinelli       |
+| Parke Spinelli         |
+| Siddarth Zhang         |
+| Feipei Weedman         |
+| Neelam Ghazalie        |
+| Bernice Cools          |
+| Kwan Zhang             |
+| Yongdong Alpin         |
+| Hilary Kieras          |
+| Richard Kieras         |
+| Teunis Quadeer         |
+| Kauko Ghazalie         |
+| Sven Wegerle           |
+| Kellie Spinelli        |
+| Neelam Wegerle         |
+| Shigehiro Kieras       |
+| Valdiodio Weedman      |
+| Zhigen Spinelli        |
+| Theron DasSarma        |
+| Sibyl Markovitch       |
+| Sarita Legleitner      |
+| Shen Ossenbruggen      |
+| Lucien Kaelbling       |
+| Kristina Ghazalie      |
+| Katsuyuki DasSarma     |
+| Sumant Legleitner      |
+| Sarita Cools           |
+| Paraskevi Ghazalie     |
+| Kristof Hagimont       |
+| Sanjai Kaelbling       |
+| Carrsten Kaelbling     |
+| Gretta DasSarma        |
+| Lena Kieras            |
+| Adin Kambil            |
+| Jiann DasSarma         |
+| Adly DasSarma          |
+| Thanasis Ossenbruggen  |
+| JoAnne Markovitch      |
+| Masami Zhang           |
+| Guther DasSarma        |
+| Leandro Kambil         |
+| Pranjal DasSarma       |
+| Jeane Cools            |
+| Dharmaraja Cools       |
+| Mingdong Cools         |
+| Vincent Kieras         |
+| Brewster Ghazalie      |
+| Stabislas Kaelbling    |
+| Kannan Wegerle         |
+| Doowon Kieras          |
+| Mokhtar Quadeer        |
+| Howell Hagimont        |
+| Emdad Kieras           |
+| Dinkar Zhang           |
+| Garnik Kieras          |
+| Pranay Kambil          |
+| Fen DasSarma           |
+| Duke Minakawa          |
+| Qingxiang Wegerle      |
+| Vasilis DasSarma       |
+| Sigeru Kieras          |
+| Sajjan Kieras          |
+| Shahar Quadeer         |
+| Aran Kieras            |
+| Troy Kambil            |
+| Almudena DasSarma      |
+| Owen Kaelbling         |
+| Pranav Wegerle         |
+| Jaewoo Ghazalie        |
+| Shai Hagimont          |
+| Alassane Wegerle       |
+| Luise Quadeer          |
+| Niranjan Quadeer       |
+| Dmitri Alpin           |
+| Hironobu Butterworth   |
+| Aria Cools             |
+| Sivanarayana DasSarma  |
+| Halsur Ghazalie        |
+| Manohar Hagimont       |
+| Nathalie Staelin       |
+| Lidong Ghazalie        |
+| Torsten Kaelbling      |
+| Nikolaos Hofmeyr       |
+| Saniya Kieras          |
+| Weiru Markovitch       |
+| Hilari Spinelli        |
+| Elgin Ghazalie         |
+| Xiaobin Kieras         |
+| Saeed Weedman          |
+| Boutros Kieras         |
+| Aemilian Cools         |
+| Leszek Hagimont        |
+| Mohd DasSarma          |
+| Eric Kieras            |
+| Shalesh Wegerle        |
+| Eran Hagimont          |
+| Aria Wegerle           |
+| Oguz Hagimont          |
+| Jaewon Zhang           |
+| Wanqing Weedman        |
+| Mitsuyuki Legleitner   |
+| Atreye Sigstam         |
+| Pantung Quadeer        |
+| Roded Hagimont         |
+| Chenyi Quadeer         |
+| IEEE Wegerle           |
+| Elliott Ghazalie       |
+| Subhash Ossenbruggen   |
+| Goo Onuegbe            |
+| Mahmut Cools           |
+| Kwee Ghazalie          |
+| Adil Kieras            |
+| Feixiong Wegerle       |
+| Reuven Ghazalie        |
+| Pragnesh Ossenbruggen  |
+| Mohamadou Cools        |
+| Sham Ghazalie          |
+| Shai Ghazalie          |
+| Fei Kaelbling          |
+| Huei Hagimont          |
+| Yechezkel DasSarma     |
+| Gou Sigstam            |
+| Udo Wegerle            |
+| Abdelghani Hagimont    |
+| Shen Weedman           |
+| Godehard Ghazalie      |
+| Mario Hagimont         |
+| Heekeun Hofmeyr        |
+| Shigehito Kaelbling    |
+| Huican Cools           |
+| Mabhin Kieras          |
+| Wanqing Kaelbling      |
+| Arfst Legleitner       |
+| Sarita Zhang           |
+| Masanao Wegerle        |
+| Rafols Onuegbe         |
+| Chenxi Wegerle         |
+| Uwe Kaelbling          |
+| Honesty DasSarma       |
+| Barton Butterworth     |
+| Bojan Kaelbling        |
+| Shen Minakawa          |
+| Ute Ghazalie           |
+| Brigham Kieras         |
+| Anwar Cools            |
+| Kerhong Markovitch     |
+| Yuriy Hagimont         |
+| Oksana Wegerle         |
+| Brigham Ossenbruggen   |
+| Kristian Onuegbe       |
+| Deborah DasSarma       |
+| Stepehn Hagimont       |
+| Masaru Minakawa        |
+| Dinkar Weedman         |
+| Chuanyi DasSarma       |
+| Zeljko Wegerle         |
+| Genki Kieras           |
+| Maria Zhang            |
+| Peer Kieras            |
+| Waiman Zhang           |
+| Mari Kambil            |
+| Leszek Hagimont        |
+| Dinkar Butterworth     |
+| Slavian Cools          |
+| Wojceich Wegerle       |
+| Xiadong Ossenbruggen   |
+| Saddek Kieras          |
+| Kirk Hagimont          |
+| Demos Kambil           |
+| Gladys Kieras          |
+| Eberhardt Pesch        |
+| Muneo Pesch            |
+| Uwe Wegerle            |
+| Jaques Weedman         |
+| George DasSarma        |
+| Olivera Cools          |
+| Tetsurou Butterworth   |
+| Wojceich Cools         |
+| Jamaludin Staelin      |
+| Baocai Markovitch      |
+| Demos Minakawa         |
+| Nobuyoshi Markovitch   |
+| Bokyung Staelin        |
+| Satyanarayana Minakawa |
+| KayLiang Hagimont      |
+| Mana Butterworth       |
+| Nahum Wegerle          |
+| Ung Kambil             |
+| Dinah Sigstam          |
+| Lokesh DasSarma        |
+| Heather Cools          |
+| Mayuko Giarratana      |
+| Jianwen Kaelbling      |
+| Dmitry Ghazalie        |
+| Prasadram DasSarma     |
+| Arvind Alpin           |
+| Bingning Kieras        |
+| Mayuri Wegerle         |
+| Gift Hofmeyr           |
+| Saddek Quadeer         |
+| Pranas Cools           |
+| Naftaly Kaelbling      |
+| Ingmar Cools           |
+| Danae Wegerle          |
+| Zvonko Hagimont        |
+| Subbu Markovitch       |
+| Chenxi Butterworth     |
+| Mikhail Hagimont       |
+| Marjo Cools            |
+| Tonia Cools            |
+| Mana Kaelbling         |
+| Ramzi DasSarma         |
+| Marc Weedman           |
+| Ung Cools              |
+| Mandell Kieras         |
+| Shigeaki DasSarma      |
+| Gudjon Hagimont        |
++------------------------+
+548 rows in set (1.98 sec)
+
+--------------
+select 'Full names of managers who have been doing the job twice' as 'Q9'
+--------------
+
++----------------------------------------------------------+
+| Q9                                                       |
++----------------------------------------------------------+
+| Full names of managers who have been doing the job twice |
++----------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select concat(first_name, ' ', last_name) as full_name
+    from employees
+    join dept_manager on employees.emp_no = dept_manager.emp_no
+    group by employees.emp_no
+    having count(employees.emp_no) > 1
+--------------
+
+Empty set (0.00 sec)
+
+--------------
+select 'Full names of employees who was paid more than $100000' as 'Q10'
+--------------
+
++--------------------------------------------------------+
+| Q10                                                    |
++--------------------------------------------------------+
+| Full names of employees who was paid more than $100000 |
++--------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select first_name, last_name
+    from (select emp_no, max(salary) as max_salary from salaries group by emp_no) as max_salaries
+    join employees on employees.emp_no = max_salaries.emp_no
+    where max_salary > 100000
+    limit 10
+--------------
+
++------------+---------------+
+| first_name | last_name     |
++------------+---------------+
+| Kwee       | Schusler      |
+| Charlene   | Brattka       |
+| Xinglin    | Eugenio       |
+| Dung       | Baca          |
+| Zissis     | Pintelas      |
+| Zhenbing   | Perng         |
+| Itzchak    | Lichtner      |
+| Debatosh   | Khasidashvili |
+| Shrikanth  | Mahmud        |
+| Duro       | Sidhu         |
++------------+---------------+
+10 rows in set (1.64 sec)
+
+--------------
+select 'Names of all departments that have employees paid more than $100000' as 'Q11'
+--------------
+
++---------------------------------------------------------------------+
+| Q11                                                                 |
++---------------------------------------------------------------------+
+| Names of all departments that have employees paid more than $100000 |
++---------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+--------------
+select distinct dept_name
+    from departments
+    join dept_emp on departments.dept_no = dept_emp.dept_no
+    join employees on employees.emp_no = dept_emp.emp_no
+    join salaries on salaries.emp_no = employees.emp_no
+    where salary > 100000
+--------------
+
++--------------------+
+| dept_name          |
++--------------------+
+| Development        |
+| Sales              |
+| Finance            |
+| Marketing          |
+| Customer Service   |
+| Production         |
+| Quality Management |
+| Research           |
+| Human Resources    |
++--------------------+
+9 rows in set (2.99 sec)
+
+Bye
