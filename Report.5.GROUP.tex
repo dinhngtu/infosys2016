@@ -1,0 +1,220 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8
+
+% Header {{{1
+
+% This is a simple template for a XeLaTeX document using the "article" class,
+% with the fontspec package to easily select fonts.
+
+%\documentclass[11pt]{article} % use larger type; default would be 10pt
+\documentclass[12pt]{article}
+
+\usepackage{fontspec} % Font selection for XeLaTeX; see fontspec.pdf for documentation
+\defaultfontfeatures{Mapping=tex-text} % to support TeX conventions like ``---''
+\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
+\usepackage{xltxtra} % Extra customizations for XeLaTeX
+
+%\setmainfont{Charis SIL} % set the main body font (\textrm), assumes Charis SIL is installed
+%\setsansfont{Deja Vu Sans}
+%\setmonofont{Deja Vu Mono}
+
+% other LaTeX packages.....
+\usepackage{geometry} % See geometry.pdf to learn the layout options. There are lots.
+\geometry{a4paper, left=25mm, right=25mm, top=25mm, bottom=25mm} % or letterpaper (US) or a5paper or....
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\usepackage{subcaption}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Report 5: GROUP}
+\author{Dinh Ngoc Tu}
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{What is the average salary of each employee?}
+
+Query:
+
+\begin{verbatim}
+select avg(salary) from salaries
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
++-------------+
+| avg(salary) |
++-------------+
+|  63810.7448 |
++-------------+
+1 row in set (0.00 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{How much was each employee paid in total?}
+
+Query:
+
+\begin{verbatim}
+select emp_no, sum(salary) from salaries group by emp_no
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
+...
+| 499990 |      129975 |
+| 499991 |      286977 |
+| 499992 |     1026876 |
+| 499993 |      245668 |
+| 499994 |       40000 |
+| 499995 |      275350 |
+| 499996 |      441939 |
+| 499997 |      997138 |
+| 499998 |      419990 |
+| 499999 |      353125 |
++--------+-------------+
+300024 rows in set (1.27 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Minimum, maximum and total salaries of each department?}
+
+Query:
+
+\begin{verbatim}
+select min(salary), max(salary), sum(salary)
+    from salaries
+    join dept_emp on salaries.emp_no = dept_emp.emp_no
+    group by dept_emp.dept_no
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
++-------------+-------------+-------------+
+| min(salary) | max(salary) | sum(salary) |
++-------------+-------------+-------------+
+|       39127 |      145128 | 13725425266 |
+|       38812 |      142395 | 11650834677 |
+|       38735 |      141953 |  9363811425 |
+|       38623 |      138273 | 41554438942 |
+|       38849 |      144434 | 48179456393 |
+|       38786 |      132103 | 10865203635 |
+|       39169 |      158220 | 40030089342 |
+|       38851 |      130211 | 11969730427 |
+|       38836 |      144866 | 13143639841 |
++-------------+-------------+-------------+
+9 rows in set (2.78 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Which departments have paid more than 20 billion dollars for their employees?}
+
+Query:
+
+\begin{verbatim}
+select dept_no
+    from salaries
+    join dept_emp on salaries.emp_no = dept_emp.emp_no
+    group by dept_no
+    having sum(salary) > 20000000000
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
++---------+
+| dept_no |
++---------+
+| d004    |
+| d005    |
+| d007    |
++---------+
+3 rows in set (2.02 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Total salaries of male employees in each department?}
+
+Query:
+
+\begin{verbatim}
+select dept_no, sum(salary)
+    from salaries
+    join dept_emp on salaries.emp_no = dept_emp.emp_no
+    join employees on salaries.emp_no = employees.emp_no
+    where gender = 'M'
+    group by dept_emp.dept_no
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
++---------+-------------+
+| dept_no | sum(salary) |
++---------+-------------+
+| d001    |  8352455367 |
+| d002    |  6940675318 |
+| d003    |  5619533959 |
+| d004    | 24873889749 |
+| d005    | 28961357095 |
+| d006    |  6472073211 |
+| d007    | 24051537190 |
+| d008    |  7174578852 |
+| d009    |  7865587983 |
++---------+-------------+
+9 rows in set (3.98 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Total salaries of department managers for each department, from highest to lowest?}
+
+Query:
+
+\begin{verbatim}
+select sum(salary) as sum_salary
+    from salaries
+    join dept_manager on salaries.emp_no = dept_manager.emp_no
+    group by dept_no
+    order by sum_salary desc
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
++------------+
+| sum_salary |
++------------+
+|    4162118 |
+|    3374004 |
+|    3187661 |
+|    3093009 |
+|    2915118 |
+|    2558661 |
+|    2549372 |
+|    2098298 |
+|    2028376 |
++------------+
+9 rows in set (0.01 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
