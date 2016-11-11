@@ -47,7 +47,7 @@
 Query:
 
 \begin{verbatim}
-select avg(salary) from salaries
+select avg(salary) from salaries;
 \end{verbatim}
 
 Output:
@@ -68,12 +68,15 @@ Output:
 Query:
 
 \begin{verbatim}
-select emp_no, sum(salary) from salaries group by emp_no
+select emp_no, sum(salary) from salaries group by emp_no;
 \end{verbatim}
 
 Output:
 
 \begin{verbatim}
++--------+-------------+
+| emp_no | sum(salary) |
++--------+-------------+
 ...
 | 499990 |      129975 |
 | 499991 |      286977 |
@@ -96,29 +99,29 @@ Output:
 Query:
 
 \begin{verbatim}
-select min(salary), max(salary), sum(salary)
+select dept_no, min(salary), max(salary), sum(salary)
     from salaries
     join dept_emp on salaries.emp_no = dept_emp.emp_no
-    group by dept_emp.dept_no
+    group by dept_no;
 \end{verbatim}
 
 Output:
 
 \begin{verbatim}
-+-------------+-------------+-------------+
-| min(salary) | max(salary) | sum(salary) |
-+-------------+-------------+-------------+
-|       39127 |      145128 | 13725425266 |
-|       38812 |      142395 | 11650834677 |
-|       38735 |      141953 |  9363811425 |
-|       38623 |      138273 | 41554438942 |
-|       38849 |      144434 | 48179456393 |
-|       38786 |      132103 | 10865203635 |
-|       39169 |      158220 | 40030089342 |
-|       38851 |      130211 | 11969730427 |
-|       38836 |      144866 | 13143639841 |
-+-------------+-------------+-------------+
-9 rows in set (2.78 sec)
++---------+-------------+-------------+-------------+
+| dept_no | min(salary) | max(salary) | sum(salary) |
++---------+-------------+-------------+-------------+
+| d001    |       39127 |      145128 | 13725425266 |
+| d002    |       38812 |      142395 | 11650834677 |
+| d003    |       38735 |      141953 |  9363811425 |
+| d004    |       38623 |      138273 | 41554438942 |
+| d005    |       38849 |      144434 | 48179456393 |
+| d006    |       38786 |      132103 | 10865203635 |
+| d007    |       39169 |      158220 | 40030089342 |
+| d008    |       38851 |      130211 | 11969730427 |
+| d009    |       38836 |      144866 | 13143639841 |
++---------+-------------+-------------+-------------+
+9 rows in set (2.54 sec)
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,7 +135,7 @@ select dept_no
     from salaries
     join dept_emp on salaries.emp_no = dept_emp.emp_no
     group by dept_no
-    having sum(salary) > 20000000000
+    having sum(salary) > 20000000000;
 \end{verbatim}
 
 Output:
@@ -160,7 +163,7 @@ select dept_no, sum(salary)
     join dept_emp on salaries.emp_no = dept_emp.emp_no
     join employees on salaries.emp_no = employees.emp_no
     where gender = 'M'
-    group by dept_emp.dept_no
+    group by dept_emp.dept_no;
 \end{verbatim}
 
 Output:
@@ -189,30 +192,30 @@ Output:
 Query:
 
 \begin{verbatim}
-select sum(salary) as sum_salary
+select dept_no, sum(salary) as sum_salary
     from salaries
     join dept_manager on salaries.emp_no = dept_manager.emp_no
     group by dept_no
-    order by sum_salary desc
+    order by sum_salary desc;
 \end{verbatim}
 
 Output:
 
 \begin{verbatim}
-+------------+
-| sum_salary |
-+------------+
-|    4162118 |
-|    3374004 |
-|    3187661 |
-|    3093009 |
-|    2915118 |
-|    2558661 |
-|    2549372 |
-|    2098298 |
-|    2028376 |
-+------------+
-9 rows in set (0.01 sec)
++---------+------------+
+| dept_no | sum_salary |
++---------+------------+
+| d006    |    4162118 |
+| d004    |    3374004 |
+| d009    |    3187661 |
+| d001    |    3093009 |
+| d007    |    2915118 |
+| d008    |    2558661 |
+| d002    |    2549372 |
+| d003    |    2098298 |
+| d005    |    2028376 |
++---------+------------+
+9 rows in set (0.00 sec)
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
