@@ -91,7 +91,7 @@ Output:
 
 Query:
 
-\begin{verbatim}
+\begin{lstlisting}[language=SQL]
 select employees.emp_no, hire_date
     from employees
     join dept_emp on employees.emp_no = dept_emp.emp_no
@@ -101,7 +101,7 @@ select employees.emp_no, hire_date
             select max(from_date)
             from dept_manager
             where dept_manager.dept_no = departments.dept_no);
-\end{verbatim}
+\end{lstlisting}
 
 Output:
 
@@ -168,16 +168,17 @@ Output:
 
 Query:
 
-\begin{verbatim}
+\begin{lstlisting}[language=SQL]
 select title, avg(salary)
     from (
         select title, salary
             from titles
             join employees on employees.emp_no = titles.emp_no
-            join salaries on salaries.emp_no = titles.emp_no) as titles_list
+            join salaries on salaries.emp_no = titles.emp_no
+            where title like '%Engineer') as titles_list
     group by title
     order by avg(salary) desc;
-\end{verbatim}
+\end{lstlisting}
 
 Output:
 
@@ -185,15 +186,11 @@ Output:
 +--------------------+-------------+
 | title              | avg(salary) |
 +--------------------+-------------+
-| Senior Staff       |  70470.8353 |
-| Staff              |  69309.1023 |
-| Manager            |  66924.2706 |
 | Senior Engineer    |  60543.2191 |
 | Engineer           |  59508.0397 |
 | Assistant Engineer |  59304.9863 |
-| Technique Leader   |  59294.3742 |
 +--------------------+-------------+
-7 rows in set (13.77 sec)
+3 rows in set (7.44 sec)
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
