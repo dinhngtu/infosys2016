@@ -1,0 +1,216 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8
+
+% Header {{{1
+
+% This is a simple template for a XeLaTeX document using the "article" class,
+% with the fontspec package to easily select fonts.
+
+%\documentclass[11pt]{article} % use larger type; default would be 10pt
+\documentclass[12pt]{article}
+
+\usepackage{fontspec} % Font selection for XeLaTeX; see fontspec.pdf for documentation
+\defaultfontfeatures{Mapping=tex-text} % to support TeX conventions like ``---''
+\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
+\usepackage{xltxtra} % Extra customizations for XeLaTeX
+
+%\setmainfont{Charis SIL} % set the main body font (\textrm), assumes Charis SIL is installed
+%\setsansfont{Deja Vu Sans}
+%\setmonofont{Deja Vu Mono}
+
+% other LaTeX packages.....
+\usepackage{geometry} % See geometry.pdf to learn the layout options. There are lots.
+\geometry{a4paper, left=25mm, right=25mm, top=25mm, bottom=25mm} % or letterpaper (US) or a5paper or....
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\usepackage{subcaption}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,columns=fullflexible,keepspaces=true}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Report 7: Views}
+\author{Dinh Ngoc Tu}
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Who has the same name as the managers of the ``Finance'' department?}
+
+Create view:
+\begin{lstlisting}[language=SQL]
+create or replace view finance_managers as
+    select employees.emp_no, last_name
+    from employees
+    join dept_manager on employees.emp_no = dept_manager.emp_no
+    join departments on departments.dept_no = dept_manager.dept_no
+    where dept_name = 'Finance';
+\end{lstlisting}
+
+Query:
+
+\begin{lstlisting}[language=SQL]
+select employees.emp_no, employees.last_name
+    from employees
+    join finance_managers
+    on employees.last_name = finance_managers.last_name
+    and employees.emp_no != finance_managers.emp_no;
+\end{lstlisting}
+
+Output:
+
+\begin{verbatim}
++--------+------------+
+| emp_no | last_name  |
++--------+------------+
+...
+| 493821 | Legleitner |
+| 495608 | Legleitner |
+| 496062 | Legleitner |
+| 497267 | Alpin      |
+| 497479 | Alpin      |
+| 497947 | Alpin      |
+| 497954 | Legleitner |
+| 498115 | Alpin      |
+| 498634 | Alpin      |
+| 499867 | Alpin      |
++--------+------------+
+406 rows in set (0.56 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Who in the ``Production'' department were hired after the promotion of the last manager in that department?}
+
+Create view:
+\begin{lstlisting}[language=SQL]
+create or replace view production_managers as
+    select dept_manager.emp_no, from_date
+    from dept_manager
+    join departments on departments.dept_no = dept_manager.dept_no
+    where departments.dept_name = 'Production';
+\end{lstlisting}
+
+Query:
+
+\begin{lstlisting}[language=SQL]
+select employees.emp_no, hire_date
+    from employees
+    join dept_emp on employees.emp_no = dept_emp.emp_no
+    join departments on departments.dept_no = dept_emp.dept_no
+    where departments.dept_name = 'Production'
+        and hire_date > (select max(from_date) from production_managers);
+\end{lstlisting}
+
+Output:
+
+\begin{verbatim}
++--------+------------+
+| emp_no | hire_date  |
++--------+------------+
+...
+| 499276 | 1996-11-07 |
+| 499296 | 1997-11-13 |
+| 499329 | 1996-11-03 |
+| 499424 | 1998-01-03 |
+| 499459 | 1997-02-03 |
+| 499732 | 1997-09-07 |
+| 499856 | 1997-05-17 |
+| 499916 | 1997-05-18 |
+| 499993 | 1997-04-07 |
+| 499999 | 1997-11-30 |
++--------+------------+
+3758 rows in set (0.29 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Find the average salary of each department, from highest to lowest.}
+
+Create view:
+\begin{lstlisting}[language=SQL]
+create or replace view dept_emp_salaries as
+    select avg(salary) as emp_salary, dept_emp.emp_no
+    from salaries
+    join dept_emp on dept_emp.emp_no = salaries.emp_no
+    group by dept_emp.emp_no;
+\end{lstlisting}
+
+Query:
+
+\begin{lstlisting}[language=SQL]
+select dept_no, avg(emp_salary)
+    from dept_emp_salaries
+    join dept_emp on dept_emp.emp_no = dept_emp_salaries.emp_no
+    group by dept_no
+    order by avg(emp_salary) desc;
+\end{lstlisting}
+
+Output:
+
+\begin{verbatim}
++---------+-----------------+
+| dept_no | avg(emp_salary) |
++---------+-----------------+
+| d007    |  78313.22247361 |
+| d001    |  69541.61771136 |
+| d002    |  68061.43501801 |
+| d008    |  57322.03105659 |
+| d004    |  57253.31382027 |
+| d005    |  57152.20845497 |
+| d009    |  56480.08591880 |
+| d006    |  54892.93507273 |
+| d003    |  53214.29085744 |
++---------+-----------------+
+9 rows in set (5.25 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Find the average salary of each job title, from highest to lowest.}
+
+Create view:
+\begin{lstlisting}[language=SQL]
+create or replace view emp_salaries as
+    select emp_no, avg(salary) as emp_salary
+    from salaries
+    group by salaries.emp_no;
+\end{lstlisting}
+
+Query:
+
+\begin{lstlisting}[language=SQL]
+select title, avg(emp_salary)
+    from emp_salaries
+    join titles on titles.emp_no = emp_salaries.emp_no
+    where title like '%Engineer'
+    group by title
+    order by avg(emp_salary) desc;
+\end{lstlisting}
+
+Output:
+
+\begin{verbatim}
++--------------------+-----------------+
+| title              | avg(emp_salary) |
++--------------------+-----------------+
+| Senior Engineer    |  59144.76835191 |
+| Engineer           |  57244.45845623 |
+| Assistant Engineer |  56963.53043254 |
++--------------------+-----------------+
+3 rows in set (2.80 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
