@@ -1,0 +1,201 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8
+
+% Header {{{1
+
+% This is a simple template for a XeLaTeX document using the "article" class,
+% with the fontspec package to easily select fonts.
+
+%\documentclass[11pt]{article} % use larger type; default would be 10pt
+\documentclass[12pt]{article}
+
+\usepackage{fontspec} % Font selection for XeLaTeX; see fontspec.pdf for documentation
+\defaultfontfeatures{Mapping=tex-text} % to support TeX conventions like ``---''
+\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
+\usepackage{xltxtra} % Extra customizations for XeLaTeX
+
+%\setmainfont{Charis SIL} % set the main body font (\textrm), assumes Charis SIL is installed
+%\setsansfont{Deja Vu Sans}
+%\setmonofont{Deja Vu Mono}
+
+% other LaTeX packages.....
+\usepackage{geometry} % See geometry.pdf to learn the layout options. There are lots.
+\geometry{a4paper, left=25mm, right=25mm, top=25mm, bottom=25mm} % or letterpaper (US) or a5paper or....
+\usepackage[parfill]{parskip} % Activate to begin paragraphs with an empty line rather than an indent
+
+\usepackage{graphicx} % support the \includegraphics command and options
+\usepackage{subcaption}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,columns=fullflexible,keepspaces=true}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Report 5: GROUP}
+\author{Dinh Ngoc Tu}
+
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Who has the same name as the managers of the ``Finance'' department?}
+
+Query:
+
+\begin{lstlisting}[language=SQL]
+select employees.emp_no, employees.last_name
+    from employees
+    join (
+        select employees.emp_no, last_name
+            from employees
+            join dept_manager
+                on employees.emp_no = dept_manager.emp_no
+            join departments
+                on departments.dept_no = dept_manager.dept_no
+            where dept_name = 'Finance') as finance_managers
+        on employees.last_name = finance_managers.last_name
+        and employees.emp_no != finance_managers.emp_no;
+\end{lstlisting}
+
+Output:
+
+\begin{verbatim}
++--------+------------+
+| emp_no | last_name  |
++--------+------------+
+...
+| 493821 | Legleitner |
+| 495608 | Legleitner |
+| 496062 | Legleitner |
+| 497267 | Alpin      |
+| 497479 | Alpin      |
+| 497947 | Alpin      |
+| 497954 | Legleitner |
+| 498115 | Alpin      |
+| 498634 | Alpin      |
+| 499867 | Alpin      |
++--------+------------+
+406 rows in set (0.00 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Who in the ``Production'' department were hired after the promotion of the last manager in that department?}
+
+Query:
+
+\begin{verbatim}
+select employees.emp_no, hire_date
+    from employees
+    join dept_emp on employees.emp_no = dept_emp.emp_no
+    join departments on dept_emp.dept_no = departments.dept_no
+    where dept_name = 'Production'
+        and hire_date > (
+            select max(from_date)
+            from dept_manager
+            where dept_manager.dept_no = departments.dept_no);
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
++--------+------------+
+| emp_no | hire_date  |
++--------+------------+
+...
+| 499276 | 1996-11-07 |
+| 499296 | 1997-11-13 |
+| 499329 | 1996-11-03 |
+| 499424 | 1998-01-03 |
+| 499459 | 1997-02-03 |
+| 499732 | 1997-09-07 |
+| 499856 | 1997-05-17 |
+| 499916 | 1997-05-18 |
+| 499993 | 1997-04-07 |
+| 499999 | 1997-11-30 |
++--------+------------+
+3758 rows in set (1.46 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Find the average salary of each department, from highest to lowest.}
+
+Query:
+
+\begin{lstlisting}[language=SQL]
+select dept_no, avg(salary)
+    from (
+        select salary, dept_no
+            from salaries
+            join employees
+                on employees.emp_no = salaries.emp_no
+            join dept_emp
+                on dept_emp.emp_no = employees.emp_no) as salary_list
+    group by dept_no
+    order by avg(salary) desc;
+\end{lstlisting}
+
+Output:
+
+\begin{verbatim}
++---------+-------------+
+| dept_no | avg(salary) |
++---------+-------------+
+| d007    |  80667.6058 |
+| d001    |  71913.2000 |
+| d002    |  70489.3649 |
+| d008    |  59665.1817 |
+| d004    |  59605.4825 |
+| d005    |  59478.9012 |
+| d009    |  58770.3665 |
+| d006    |  57251.2719 |
+| d003    |  55574.8794 |
++---------+-------------+
+9 rows in set (7.93 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Find the average salary of each job title, from highest to lowest.}
+
+Query:
+
+\begin{verbatim}
+select title, avg(salary)
+    from (
+        select title, salary
+            from titles
+            join employees on employees.emp_no = titles.emp_no
+            join salaries on salaries.emp_no = titles.emp_no) as titles_list
+    group by title
+    order by avg(salary) desc;
+\end{verbatim}
+
+Output:
+
+\begin{verbatim}
++--------------------+-------------+
+| title              | avg(salary) |
++--------------------+-------------+
+| Senior Staff       |  70470.8353 |
+| Staff              |  69309.1023 |
+| Manager            |  66924.2706 |
+| Senior Engineer    |  60543.2191 |
+| Engineer           |  59508.0397 |
+| Assistant Engineer |  59304.9863 |
+| Technique Leader   |  59294.3742 |
++--------------------+-------------+
+7 rows in set (13.77 sec)
+\end{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
