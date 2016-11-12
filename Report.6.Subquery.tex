@@ -131,35 +131,34 @@ Output:
 Query:
 
 \begin{lstlisting}[language=SQL]
-select dept_no, avg(salary)
+select dept_no, avg(emp_salary)
     from (
-        select salary, dept_no
+        select avg(salary) as emp_salary, dept_emp.emp_no
             from salaries
-            join employees
-                on employees.emp_no = salaries.emp_no
-            join dept_emp
-                on dept_emp.emp_no = employees.emp_no) as salary_list
+            join dept_emp on dept_emp.emp_no = salaries.emp_no
+            group by dept_emp.emp_no) as emp_salaries
+    join dept_emp on dept_emp.emp_no = emp_salaries.emp_no
     group by dept_no
-    order by avg(salary) desc;
+    order by avg(emp_salary) desc;
 \end{lstlisting}
 
 Output:
 
 \begin{verbatim}
-+---------+-------------+
-| dept_no | avg(salary) |
-+---------+-------------+
-| d007    |  80667.6058 |
-| d001    |  71913.2000 |
-| d002    |  70489.3649 |
-| d008    |  59665.1817 |
-| d004    |  59605.4825 |
-| d005    |  59478.9012 |
-| d009    |  58770.3665 |
-| d006    |  57251.2719 |
-| d003    |  55574.8794 |
-+---------+-------------+
-9 rows in set (7.93 sec)
++---------+-----------------+
+| dept_no | avg(emp_salary) |
++---------+-----------------+
+| d007    |  78313.22247361 |
+| d001    |  69541.61771136 |
+| d002    |  68061.43501801 |
+| d008    |  57322.03105659 |
+| d004    |  57253.31382027 |
+| d005    |  57152.20845497 |
+| d009    |  56480.08591880 |
+| d006    |  54892.93507273 |
+| d003    |  53214.29085744 |
++---------+-----------------+
+9 rows in set (3.41 sec)
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -169,28 +168,28 @@ Output:
 Query:
 
 \begin{lstlisting}[language=SQL]
-select title, avg(salary)
+select title, avg(emp_salary)
     from (
-        select title, salary
-            from titles
-            join employees on employees.emp_no = titles.emp_no
-            join salaries on salaries.emp_no = titles.emp_no
-            where title like '%Engineer') as titles_list
+        select avg(salary) as emp_salary, title
+            from salaries
+            join titles on titles.emp_no = salaries.emp_no
+            where title like '%Engineer'
+            group by salaries.emp_no) as emp_salaries
     group by title
-    order by avg(salary) desc;
+    order by avg(emp_salary) desc;
 \end{lstlisting}
 
 Output:
 
 \begin{verbatim}
-+--------------------+-------------+
-| title              | avg(salary) |
-+--------------------+-------------+
-| Senior Engineer    |  60543.2191 |
-| Engineer           |  59508.0397 |
-| Assistant Engineer |  59304.9863 |
-+--------------------+-------------+
-3 rows in set (7.44 sec)
++--------------------+-----------------+
+| title              | avg(emp_salary) |
++--------------------+-----------------+
+| Engineer           |  57007.79701364 |
+| Assistant Engineer |  56963.53043254 |
+| Senior Engineer    |  56936.31791254 |
++--------------------+-----------------+
+3 rows in set (3.66 sec)
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
