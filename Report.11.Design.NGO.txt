@@ -1,0 +1,199 @@
+1. Determine concepts
+	- Head office
+	- City
+	- Country
+	- Person
+	- Project
+	- Action
+
+2. Determine attributes
+	- Head office
+		- Head office ID
+		- City
+		- Address
+		- Phone number
+		- Director
+	- City
+		- Name
+		- Country
+	- Person
+		- ID
+		- Name
+	- Project
+		- Project code
+		- Project title
+		- Begin date
+		- End date
+		- Budget
+		- PM
+	- Action
+		- ID
+		- Name
+		- Number of inhabitants
+
+3. Determine links between concepts
+	- Each HO resides in one city
+	- Each HO manages several projects
+	- Each project contains many actions
+	- Each action affects multiple cities; one city can be affected by multiple actions
+	- Each city belongs to a country
+
+4. Determine attribute types
+	- Head office
+		- ID: int
+		- City ID: int
+		- Address: text
+		- Phone number: varchar(20)
+		- Director ID: int
+	- City
+		- ID: int
+		- Name: varchar(100)
+		- Country: varchar(100)
+	- Person:
+		- ID: int
+		- Name: varchar(100)
+	- Project:
+		- Project code: int
+		- Project title: varchar(100)
+		- Begin date: date
+		- End date: date
+		- Budget: bigint
+		- Person ID of PM: int
+	- Action:
+		- ID
+		- Name: varchar(100)
+		- Number of inhabitants: bigint
+
+5. Solve foreign key links
+	5.1. Primary keys
+		- Head office: ID
+		- City: ID
+		- Person: ID
+		- Project: project code
+		- Action: ID
+	5.2. Add foreign keys for 1-n
+		- Head office:
+			- City ID
+			- Director ID
+		- Project:
+			- Head office ID
+			- ID of PM
+		- Action:
+			- Project ID
+	5.3. Add tables for n-n
+		- Action-City:
+			- Action ID
+			- City ID
+
+6. Implementation
+
+create database ngo;
+use ngo;
+
+create table cities(
+	city_id int not null auto_increment,
+	city_name varchar(100) not null,
+	country varchar(100) not null,
+	primary key (city_id));
+
+create table people(
+	person_id int not null auto_increment,
+	person_name varchar(100) not null,
+	primary key (person_id));
+
+create table head_offices(
+	ho_id int not null auto_increment,
+	city_id int not null,
+	address text not null,
+	phone varchar(20) not null,
+	director_id int not null,
+	primary key (ho_id),
+	foreign key (city_id) references cities(city_id),
+	foreign key (director_id) references people(person_id));
+
+create table projects(
+	project_code int not null auto_increment,
+	ho_id int not null,
+	project_title varchar(100) not null,
+	begin_date date not null,
+	end_date date not null,
+	budget bigint not null,
+	pm_id int not null,
+	primary key (project_code),
+	foreign key (ho_id) references head_offices(ho_id),
+	foreign key (pm_id) references people(person_id));
+
+create table actions(
+	action_id int not null auto_increment,
+	project_code int not null,
+	action_name varchar(100) not null,
+	num_inhabitants bigint not null,
+	primary key (action_id),
+	foreign key (project_code) references projects(project_code));
+
+create table action_city(
+	action_id int not null,
+	city_id int not null,
+	foreign key (action_id) references actions(action_id),
+	foreign key (city_id) references cities(city_id));
+
+7. Description
+
+describe cities;
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| city_id   | int(11)      | NO   | PRI | NULL    | auto_increment |
+| city_name | varchar(100) | NO   |     | NULL    |                |
+| country   | varchar(100) | NO   |     | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+
+describe people;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| person_id   | int(11)      | NO   | PRI | NULL    | auto_increment |
+| person_name | varchar(100) | NO   |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+
+describe head_offices;
++-------------+-------------+------+-----+---------+----------------+
+| Field       | Type        | Null | Key | Default | Extra          |
++-------------+-------------+------+-----+---------+----------------+
+| ho_id       | int(11)     | NO   | PRI | NULL    | auto_increment |
+| city_id     | int(11)     | NO   | MUL | NULL    |                |
+| address     | text        | NO   |     | NULL    |                |
+| phone       | varchar(20) | NO   |     | NULL    |                |
+| director_id | int(11)     | NO   | MUL | NULL    |                |
++-------------+-------------+------+-----+---------+----------------+
+
+describe projects;
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| project_code  | int(11)      | NO   | PRI | NULL    | auto_increment |
+| ho_id         | int(11)      | NO   | MUL | NULL    |                |
+| project_title | varchar(100) | NO   |     | NULL    |                |
+| begin_date    | date         | NO   |     | NULL    |                |
+| end_date      | date         | NO   |     | NULL    |                |
+| budget        | bigint(20)   | NO   |     | NULL    |                |
+| pm_id         | int(11)      | NO   | MUL | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+
+describe actions;
++-----------------+--------------+------+-----+---------+----------------+
+| Field           | Type         | Null | Key | Default | Extra          |
++-----------------+--------------+------+-----+---------+----------------+
+| action_id       | int(11)      | NO   | PRI | NULL    | auto_increment |
+| project_code    | int(11)      | NO   | MUL | NULL    |                |
+| action_name     | varchar(100) | NO   |     | NULL    |                |
+| num_inhabitants | bigint(20)   | NO   |     | NULL    |                |
++-----------------+--------------+------+-----+---------+----------------+
+
+describe action_city;
++-----------+---------+------+-----+---------+-------+
+| Field     | Type    | Null | Key | Default | Extra |
++-----------+---------+------+-----+---------+-------+
+| action_id | int(11) | NO   | MUL | NULL    |       |
+| city_id   | int(11) | NO   | MUL | NULL    |       |
++-----------+---------+------+-----+---------+-------+
