@@ -1,0 +1,128 @@
+1. Determine concepts
+	- Magazine
+	- Article
+	- Author
+
+2. Determine attributes
+	- Magazine
+		- Title
+		- ISSN
+		- Volume number
+		- Year
+		- Number sold
+	- Article
+		- Title
+		- Page of beginning
+		- Page of ending
+	- Author
+		- Name
+		- E-mail address
+		- Ascription
+
+3. Determine links between concepts
+	- Each magazine has multiple articles; each article belongs to one magazine
+	- Each article has many authors; each author has many articles
+
+4. Determine attribute types
+	- Magazine
+		- Title: varchar(100)
+		- ISSN: varchar(10)
+		- Volume number: smallint
+		- Year: year
+		- Number sold: bigint
+	- Article
+		- Title: varchar(100)
+		- Page of beginning: smallint
+		- Page of ending: smallint
+	- Author
+		- Name: varchar(100)
+		- E-mail address: varchar(100)
+		- Ascription: text
+
+5. Solve foreign key links
+	5.1. Primary keys
+		- Magazine: ISSN
+		- Article: add new field "Article ID"
+		- Author: add new field "Author ID"
+	5.2. Add foreign keys for 1-n
+		- Magazine: none
+		- Article: add foreign key "Magazine"."ISSN"
+	5.3. Add tables for n-n
+		- Article-Author: add table "Article-Author" with columns: "Article"."Article ID" and "Author"."Author ID"
+
+6. Implementation
+
+create database magazines;
+use magazines;
+
+create table magazines(
+	title varchar(100) not null,
+	issn varchar(10) not null,
+	vol_number smallint,
+	year year,
+	number_sold bigint not null,
+	primary key (issn));
+
+create table articles(
+	title varchar(100) not null,
+	page_begin smallint not null,
+	page_end smallint not null,
+	article_id int not null auto_increment,
+	issn varchar(10) not null,
+	primary key (article_id),
+	foreign key (issn) references magazines(issn));
+
+create table authors(
+	name varchar(100) not null,
+	email varchar(100) not null,
+	ascription text,
+	author_id int not null auto_increment,
+	primary key (author_id));
+
+create table article_author(
+	article_id int not null,
+	author_id int not null,
+	foreign key (article_id) references articles(article_id),
+	foreign key (author_id) references authors(author_id));
+
+7. Description
+
+describe magazines;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| title       | varchar(100) | NO   |     | NULL    |       |
+| issn        | varchar(10)  | NO   | PRI | NULL    |       |
+| vol_number  | smallint(6)  | YES  |     | NULL    |       |
+| year        | year(4)      | YES  |     | NULL    |       |
+| number_sold | bigint(20)   | NO   |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+
+describe articles;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| title      | varchar(100) | NO   |     | NULL    |                |
+| page_begin | smallint(6)  | NO   |     | NULL    |                |
+| page_end   | smallint(6)  | NO   |     | NULL    |                |
+| article_id | int(11)      | NO   | PRI | NULL    | auto_increment |
+| issn       | varchar(10)  | NO   | MUL | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+
+describe authors;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| name       | varchar(100) | NO   |     | NULL    |                |
+| email      | varchar(100) | NO   |     | NULL    |                |
+| ascription | text         | YES  |     | NULL    |                |
+| author_id  | int(11)      | NO   | PRI | NULL    | auto_increment |
++------------+--------------+------+-----+---------+----------------+
+
+describe article_author;
++------------+---------+------+-----+---------+-------+
+| Field      | Type    | Null | Key | Default | Extra |
++------------+---------+------+-----+---------+-------+
+| article_id | int(11) | NO   | MUL | NULL    |       |
+| author_id  | int(11) | NO   | MUL | NULL    |       |
++------------+---------+------+-----+---------+-------+
