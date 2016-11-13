@@ -1,0 +1,213 @@
++--------------------------------------------------------------------------+
+| List names of all the languages in the database (sorted alphabetically)? |
++--------------------------------------------------------------------------+
+
+--------------
+select name from language order by name
+--------------
+
++----------+
+| name     |
++----------+
+| English  |
+| French   |
+| German   |
+| Italian  |
+| Japanese |
+| Mandarin |
++----------+
+6 rows in set (0.00 sec)
+
++--------------------------------------------------------------------------------------+
+| List full names of actors with "GER" in their last name, ordered by their first name |
++--------------------------------------------------------------------------------------+
+
+--------------
+select first_name, last_name from actor where last_name like '%GER%' order by first_name
+--------------
+
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| CAMERON    | ZELLWEGER |
+| JULIA      | ZELLWEGER |
+| MICHAEL    | BOLGER    |
+| MINNIE     | ZELLWEGER |
+| VAL        | BOLGER    |
+| VIVIEN     | BASINGER  |
++------------+-----------+
+6 rows in set (0.00 sec)
+
++-----------------------------------------------------------------------------------------+
+| Find all the addresses where postal code starts with "57", and return addresses sorted. |
++-----------------------------------------------------------------------------------------+
+
+--------------
+select * from address where postal_code like '57%' order by address
+--------------
+
++------------+-----------------------------------+----------+------------------+---------+-------------+--------------+---------------------+
+| address_id | address                           | address2 | district         | city_id | postal_code | phone        | last_update         |
++------------+-----------------------------------+----------+------------------+---------+-------------+--------------+---------------------+
+|        143 | 1029 Dzerzinsk Manor              |          | Ynlin            |     542 | 57519       | 33173584456  | 2014-09-25 22:33:16 |
+|        376 | 1061 Ede Avenue                   |          | Southern Tagalog |      98 | 57810       | 333390595558 | 2014-09-25 22:32:35 |
+|        167 | 1287 Xiangfan Boulevard           |          | Gifu             |     253 | 57844       | 819416131190 | 2014-09-25 22:31:48 |
+|        252 | 1309 Weifang Street               |          | Florida          |     520 | 57338       | 435785045362 | 2014-09-25 22:34:02 |
+|        502 | 1515 Korla Way                    |          | England          |     589 | 57197       | 959467760895 | 2014-09-25 22:33:42 |
+|         59 | 1697 Kowloon and New Kowloon Loop |          | Moskova          |      49 | 57807       | 499352017190 | 2014-09-25 22:32:47 |
+|        444 | 231 Kaliningrad Place             |          | Lombardia        |      70 | 57833       | 575081026569 | 2014-09-25 22:31:42 |
+|        552 | 390 Wroclaw Way                   |          | Hainan           |     462 | 5753        | 357593328658 | 2014-09-25 22:30:41 |
+|        338 | 431 Szkesfehrvr Avenue            |          | Baki             |      48 | 57828       | 119501405123 | 2014-09-25 22:30:11 |
+|        308 | 687 Alessandria Parkway           |          | Sanaa            |     455 | 57587       | 407218522294 | 2014-09-25 22:34:10 |
+|        562 | 869 Shikarpur Way                 |          | England          |     496 | 57380       | 590764256785 | 2014-09-25 22:33:40 |
++------------+-----------------------------------+----------+------------------+---------+-------------+--------------+---------------------+
+11 rows in set (0.00 sec)
+
++---------------------------------------------------+
+| How many films involve a "DWARF" in their titles? |
++---------------------------------------------------+
+
+--------------
+select count(*) from film where title like '%DWARF%'
+--------------
+
++----------+
+| count(*) |
++----------+
+|        2 |
++----------+
+1 row in set (0.00 sec)
+
++-------------------------------+
+| Find full names of actors ... |
++-------------------------------+
+
+--------------
+select first_name, last_name, film.title, film.length, film.release_year
+from actor
+join film_actor on film_actor.actor_id = actor.actor_id
+join film on film.film_id = film_actor.film_id
+join film_list on film_list.FID = film.film_id
+where film.title like '%WAR%'
+    and film.length > 2.5*60
+order by last_name
+--------------
+
++------------+-------------+---------------------+--------+--------------+
+| first_name | last_name   | title               | length | release_year |
++------------+-------------+---------------------+--------+--------------+
+| ANGELINA   | ASTAIRE     | WARDROBE PHANTOM    |    178 |         2006 |
+| KARL       | BERRY       | LEATHERNECKS DWARFS |    153 |         2006 |
+| SUSAN      | DAVIS       | LEATHERNECKS DWARFS |    153 |         2006 |
+| RIVER      | DEAN        | WARDROBE PHANTOM    |    178 |         2006 |
+| SPENCER    | DEPP        | LEATHERNECKS DWARFS |    153 |         2006 |
+| BOB        | FAWCETT     | LEATHERNECKS DWARFS |    153 |         2006 |
+| GREGORY    | GOODING     | WARDROBE PHANTOM    |    178 |         2006 |
+| ADAM       | GRANT       | GLADIATOR WESTWARD  |    173 |         2006 |
+| KIRK       | JOVOVICH    | GLADIATOR WESTWARD  |    173 |         2006 |
+| KIRK       | JOVOVICH    | WARDROBE PHANTOM    |    178 |         2006 |
+| JULIA      | MCQUEEN     | GLADIATOR WESTWARD  |    173 |         2006 |
+| PENELOPE   | MONROE      | LEATHERNECKS DWARFS |    153 |         2006 |
+| WARREN     | NOLTE       | WARDROBE PHANTOM    |    178 |         2006 |
+| JAYNE      | SILVERSTONE | GLADIATOR WESTWARD  |    173 |         2006 |
+| IAN        | TANDY       | LEATHERNECKS DWARFS |    153 |         2006 |
+| IAN        | TANDY       | GLADIATOR WESTWARD  |    173 |         2006 |
+| THORA      | TEMPLE      | WARDROBE PHANTOM    |    178 |         2006 |
+| WALTER     | TORN        | WARDROBE PHANTOM    |    178 |         2006 |
+| NICK       | WAHLBERG    | WARDROBE PHANTOM    |    178 |         2006 |
+| UMA        | WOOD        | LEATHERNECKS DWARFS |    153 |         2006 |
+| CAMERON    | ZELLWEGER   | GLADIATOR WESTWARD  |    173 |         2006 |
++------------+-------------+---------------------+--------+--------------+
+21 rows in set (0.00 sec)
+
++----------------------------------+
+| Find all the film categories ... |
++----------------------------------+
+
+--------------
+select category.category_id, count(*) as num_films
+from film_category
+join category on category.category_id = film_category.category_id
+group by category.category_id
+having num_films between 55 and 65
+order by num_films desc
+--------------
+
++-------------+-----------+
+| category_id | num_films |
++-------------+-----------+
+|           1 |        64 |
+|          13 |        63 |
+|           7 |        62 |
+|          10 |        61 |
+|          14 |        61 |
+|           3 |        60 |
+|           5 |        58 |
+|           4 |        57 |
+|          16 |        57 |
+|          11 |        56 |
++-------------+-----------+
+10 rows in set (0.00 sec)
+
++---------------------------------+
+| In how many film categories ... |
++---------------------------------+
+
+--------------
+select count(*) from (
+    select 1
+    from film_category
+    join film on film.film_id = film_category.film_id
+    group by film_category.category_id
+    having avg(replacement_cost - rental_rate) > 17) as has_avg
+--------------
+
++----------+
+| count(*) |
++----------+
+|        8 |
++----------+
+1 row in set (0.00 sec)
+
++------------------------------------------+
+| Find the address district(s) name(s) ... |
++------------------------------------------+
+
+--------------
+select district, min_district_postal_code
+from (
+    select district, min(postal_code) as min_district_postal_code
+    from address
+    where coalesce(postal_code, '') != '' and coalesce(district, '') != ''
+    group by district) as districts_codes
+order by min_district_postal_code desc
+limit 1
+--------------
+
++----------+--------------------------+
+| district | min_district_postal_code |
++----------+--------------------------+
+| Crdoba   | 99865                    |
++----------+--------------------------+
+1 row in set (0.00 sec)
+
++--------------------------------------------------------+
+| Find the names (first and last) of all the actors ...) |
++--------------------------------------------------------+
+
+--------------
+select first_name, last_name from actor
+where first_name = (select first_name from actor where actor_id = 101)
+    and actor_id != 101
+union
+select first_name, last_name from customer
+where first_name = (select first_name from actor where actor_id = 101)
+--------------
+
++------------+-----------+
+| first_name | last_name |
++------------+-----------+
+| SUSAN      | DAVIS     |
+| SUSAN      | WILSON    |
++------------+-----------+
+2 rows in set (0.00 sec)
