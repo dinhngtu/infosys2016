@@ -45,9 +45,11 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Which normal form does the $\texttt{employee}$ database satisfy? Why?}
+\section{Which normal form does the $\texttt{employees}$ database satisfy? Why?}
 
-Here is the \verb|employee| table:
+\subsection{The $\texttt{employees}$ table}
+
+Here is the \verb|employees| table:
 
 \begin{tabular}{l|l|l|l|l|l}
 	\verb|emp_no| & \verb|birth_date| & \verb|first_name| & \verb|last_name| & \verb|gender| & \verb|hire_date| \\
@@ -59,9 +61,29 @@ Here is the \verb|employee| table:
 	10005 & 1955-01-21 & Kyoichi & Maliniak & M & 1989-09-12 \\
 \end{tabular}
 
-All columns in the table except for \verb|emp_no| are only dependent on \verb|emp_no|; in other words, one \verb|emp_no| value maps to exactly one value in each other column.
+All columns in the table except for \verb|emp_no| are dependent and only dependent on \verb|emp_no|; in other words, one \verb|emp_no| value maps to exactly one value in each other column.
 
 Therefore, the \verb|employee| table is in 3NF.
+
+\subsection{The $\texttt{departments}$ table}
+
+The \verb|departments| table has two columns: \verb|dept_no| and \verb|dept_name|. As \verb|dept_name| is only dependent on \verb|dept_no|, the table is in 3NF.
+
+\subsection{The $\texttt{dept\_emp}$ table}
+
+The table has a primary key $(\texttt{emp\_no}, \texttt{dept\_no})$ and two other columns \verb|from_date| and \verb|to_date|. These two columns are only dependent on the primary key, so this table is also in 3NF.
+
+\subsection{The $\texttt{dept\_manager}$ table}
+
+This table has the same structure as the \verb|dept_emp| table, so it is also in 3NF.
+
+\subsection{The $\texttt{salaries}$ table}
+
+The table has a primary key $(\texttt{emp\_no}, \texttt{from\_date})$ and two other columns \verb|salary| and \verb|to_date|. These two columns are only dependent on the primary key, so this table is also in 3NF.
+
+\subsection{The $\texttt{titles}$ table}
+
+The table has a primary key $(\texttt{emp\_no}, \texttt{title}, \texttt{from\_date})$ and one extra column \verb|to_date|. This column is only dependent on the primary key, so this table is also in 3NF.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -95,7 +117,7 @@ We split each set of dependent columns into one table, and receive the following
 	\item ``Products'' number:
 		\begin{itemize}
 			\item Product ID
-			\item Product description
+			\item Product descr	iption
 			\item Product price
 		\end{itemize}
 	\item ``Order detail'' table:
